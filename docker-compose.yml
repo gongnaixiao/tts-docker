@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   tts-mysql:
     build:
@@ -42,105 +43,104 @@ services:
       nsrr:
         aliases:
           - tts-redis
-  tts-sentinel:
-    image: bladex/sentinel-dashboard:1.7.0
-    ports:
-      - 8858:8858
-    restart: always
-    container_name: tts-sentinel
-    hostname: tts-sentinel
-    environment:
-      JAVA_OPTS: "-Xmx256m -Xms256m"
-    volumes:
-      - ./tts-sentinel/logs:/opt/logs
-    networks:
-      nsrr:
-        aliases:
-          - tts-sentinel
-  tts-zipkin:
-    image: openzipkin/zipkin
-    ports:
-      - 9411:9411
-    restart: always
-    container_name: tts-zipkin
-    hostname: tts-zipkin
-    networks:
-      nsrr:
-        aliases:
-          - tts-zipkin
-#  tts-es:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
-#    ports:
-#      - 9200:9200
-#      - 9300:9300
-#    environment:
-#      - discovery.type=single-node
-#    restart: always
-#    container_name: tts-es
-#    hostname: tts-es
-#  tts-kibana:
-#    image:
-#    ports:
-#      - 5601:5601
-#    environment:
-#
-#    restart: always
-#    container_name: tts-kibana
-#    hostname: tts-kibana
-#    depends_on:
-#      - tts-es
-  tts-rmqnamesrv:
-    image: foxiswho/rocketmq:server
-    container_name: tts-rmqnamesrv
-    environment:
-      JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
-    ports:
-      - 9876:9876
-    restart: always
-    volumes:
-      - ./tts-rmq/logs:/opt/logs
-      - ./tts-rmq/store:/opt/rmqstore
-    networks:
-      nsrr:
-        aliases:
-          - tts-rmqnamesrv
-  tts-rmqbroker:
-    image: foxiswho/rocketmq:broker
-    container_name: tts-rmqbroker
-    ports:
-      - 10909:10909
-      - 10911:10911
-    restart: always
-    volumes:
-      - ./tts-rmq/logs:/opt/logs
-      - ./tts-rmq/store:/opt/rmqstore
-      - ./tts-rmq/brokerconf/broker.conf:/etc/rocketmq/broker.conf
-    environment:
-      NAMESRV_ADDR: "tts-rmqnamesrv:9876"
-      JAVA_OPTS: " -Duser.home=/opt"
-      JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
-    command: mqbroker -c /etc/rocketmq/broker.conf
-    depends_on:
-      - tts-rmqnamesrv
-    networks:
-      nsrr:
-        aliases:
-          - tts-rmqbroker
-  tts-rmqconsole:
-    image: styletang/rocketmq-console-ng
-    container_name: tts-rmqconsole
-    ports:
-      - 8180:8080
-    restart: always
-    environment:
-      JAVA_OPTS: "-Drocketmq.namesrv.addr=tts-rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false "
-      JAVA_OPT_EXT: "-Xms128m -Xmx128m -Xmn128m"
-    depends_on:
-      - tts-rmqnamesrv
-    networks:
-      nsrr:
-        aliases:
-          - tts-rmqconsole
+# tts-es:
+#   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+#   ports:
+#     - 9200:9200
+#     - 9300:9300
+#   environment:
+#     - discovery.type=single-node
+#   restart: always
+#   container_name: tts-es
+#   hostname: tts-es
+# tts-kibana:
+#   image:
+#   ports:
+#     - 5601:5601
+#   environment:
+#   restart: always
+#   container_name: tts-kibana
+#   hostname: tts-kibana
+#   depends_on:
+#     - tts-es
+# tts-sentinel:
+#   image: bladex/sentinel-dashboard:1.7.0
+#   ports:
+#     - 8858:8858
+#   restart: always
+#   container_name: tts-sentinel
+#   hostname: tts-sentinel
+#   environment:
+#     JAVA_OPTS: "-Xmx256m -Xms256m"
+#   volumes:
+#     - ./tts-sentinel/logs:/opt/logs
+#   networks:
+#     nsrr:
+#       aliases:
+#         - tts-sentinel
+# tts-zipkin:
+#   image: openzipkin/zipkin
+#   ports:
+#     - 9411:9411
+#   restart: always
+#   container_name: tts-zipkin
+#   hostname: tts-zipkin
+#   networks:
+#     nsrr:
+#       aliases:
+#         - tts-zipkin
+# tts-rmqnamesrv:
+#   image: foxiswho/rocketmq:server
+#   container_name: tts-rmqnamesrv
+#   environment:
+#     JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
+#   ports:
+#     - 9876:9876
+#   restart: always
+#   volumes:
+#     - ./tts-rmq/logs:/opt/logs
+#     - ./tts-rmq/store:/opt/rmqstore
+#   networks:
+#     nsrr:
+#       aliases:
+#         - tts-rmqnamesrv
+# tts-rmqbroker:
+#   image: foxiswho/rocketmq:broker
+#   container_name: tts-rmqbroker
+#   ports:
+#     - 10909:10909
+#     - 10911:10911
+#   restart: always
+#   volumes:
+#     - ./tts-rmq/logs:/opt/logs
+#     - ./tts-rmq/store:/opt/rmqstore
+#     - ./tts-rmq/brokerconf/broker.conf:/etc/rocketmq/broker.conf
+#   environment:
+#     NAMESRV_ADDR: "tts-rmqnamesrv:9876"
+#     JAVA_OPTS: " -Duser.home=/opt"
+#     JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
+#   command: mqbroker -c /etc/rocketmq/broker.conf
+#   depends_on:
+#     - tts-rmqnamesrv
+#   networks:
+#     nsrr:
+#       aliases:
+#         - tts-rmqbroker
+# tts-rmqconsole:
+#   image: styletang/rocketmq-console-ng
+#   container_name: tts-rmqconsole
+#   ports:
+#     - 8180:8080
+#   restart: always
+#   environment:
+#     JAVA_OPTS: "-Drocketmq.namesrv.addr=tts-rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false "
+#     JAVA_OPT_EXT: "-Xms128m -Xmx128m -Xmn128m"
+#   depends_on:
+#     - tts-rmqnamesrv
+#   networks:
+#     nsrr:
+#       aliases:
+#         - tts-rmqconsole
 networks:
   nsrr:
     name: nsrr
