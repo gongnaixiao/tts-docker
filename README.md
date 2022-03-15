@@ -1,6 +1,3 @@
-# tts-docker
-docker compose
-
 ### 配置镜像源
 1.获取阿里云容器镜像加速器地址
 访问阿里云容器镜像加速器（需要先进行登录），地址如下:
@@ -53,3 +50,6 @@ docker update 451172e0f003 --restart=no
 docker update d99684eabbc5 --restart=no
 docker update 042d2f851c5b --restart=no
 docker update e3daa59b0cb2 --restart=no
+
+# tts-docker
+docker compose

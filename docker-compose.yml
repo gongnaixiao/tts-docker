@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   tts-mysql:
     build:
@@ -38,6 +38,10 @@ services:
     ports:
       - 8848:8848
       - 9848:9848
+    networks:
+      nsrr:
+        aliases:
+          - tts-redis
   tts-sentinel:
     image: bladex/sentinel-dashboard:1.7.0
     ports:
