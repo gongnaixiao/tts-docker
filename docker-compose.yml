@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services:
   tts-mysql:
@@ -9,6 +9,8 @@ services:
     restart: "no"
     container_name: tts-mysql
     image: tts-mysql
+    security_opt:
+      - seccomp:unconfined
     ports:
       - 3306:3306
     networks:
@@ -27,7 +29,7 @@ services:
         aliases:
           - tts-redis
   tts-register:
-    image: nacos/nacos-server:2.0.2
+    image: nacos/nacos-server:v2.2.0
     container_name: tts-register
     hostname: tts-register
     env_file:
@@ -42,7 +44,22 @@ services:
     networks:
       nsrr:
         aliases:
-          - tts-redis
+          - tts-register
+  tts-seata:
+    image: seataio/seata-server:1.6.1
+    hostname: seata-server
+    container_name: tts-seata
+    ports:
+      - "8091:8091"
+      - "7091:7091"
+    environment:
+      - SEATA_PORT=8091
+      - STORE_MODE=file
+    restart: "no"
+    networks:
+      nsrr:
+        aliases:
+          - tts-seata
   tts-zk:
     image: wurstmeister/zookeeper
     container_name: tts-zk
