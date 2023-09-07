@@ -102,7 +102,24 @@ services:
       nsrr:
         aliases:
           - tts-job
-
+  tts-postgres:
+    image: postgres:12.3
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: no
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - APP_DB_USER=docker
+      - APP_DB_PASS=docker
+      - APP_DB_NAME=docker
+    volumes:
+      - ./postgres-db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
 # tts-es:
 #   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
 #   ports:
